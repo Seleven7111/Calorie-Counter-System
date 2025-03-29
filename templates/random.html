@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Research</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #7b1fa2;
+        }
+
+        .navbar a.nav-link {
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            margin: 0 10px;
+            display: inline-block;
+        }
+
+        .navbar a.nav-link:hover,
+        .navbar a.nav-link.active {
+            background-color: #6a1b9a;
+        }
+
+        .navbar-nav {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .form-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-custom {
+            background-color: #7b1fa2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-custom:hover {
+            background-color: #6a1b9a;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .table th, .table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .table th {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* 骰子动画 */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .fa-dice {
+            font-size: 24px;
+            transition: transform 0.5s;
+        }
+
+        .fa-dice.spinning {
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid box">
+    <!-- 横向导航栏 -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"> FOOD SEARCH </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/calculate"> CALORIE CALCULATOR </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/recipes"> FOOD RECIPES </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="illness"> FOOD THERAPY </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="random"> RANDOM FOOD </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <h1 class="text-center">Don't know what to eat? <button id="random-food-button" style="background: none; border: none; cursor: pointer;"><i class="fas fa-dice"></i></button></h1>
+    </div>
+    
+
+    <div id="result" class="container"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#random-food-button').on('click', function() {
+            // 添加旋转动画
+            $('.fa-dice').addClass('spinning');
+
+            $.get('/randomFood', function(response) {
+                const resultElement = $('#result');
+                resultElement.html(''); // 清空之前的结果
+
+                if (response.random_foods && response.random_foods.length > 0) {
+                    resultElement.append('<p>Here are some random food suggestions:</p>');
+                    response.random_foods.forEach(function(food) {
+                        resultElement.append(`<p>${food}</p>`);
+                    });
+                } else {
+                    resultElement.html('<p>No food suggestions available.</p>');
+                }
+
+                // 移除旋转动画
+                setTimeout(function() {
+                    $('.fa-dice').removeClass('spinning');
+                }, 1000);
+            });
+        });
+    });
+</script>
+</body>
+</html>

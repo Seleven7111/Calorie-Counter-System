@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMR Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #7b1fa2;
+            width: 100%;
+        }
+
+        .navbar a.nav-link {
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            margin: 0 10px;
+            display: inline-block;
+        }
+
+        .navbar a.nav-link:hover,
+        .navbar a.nav-link.active {
+            background-color: #6a1b9a;
+        }
+
+        .navbar-nav {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .box {
+            width: 100%;
+            height: 1000px;
+            /* background-color: #FEF3E2; */
+            text-align: center;
+            position: relative;
+            top: 0;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        h1,
+        p {
+            text-align: center;
+            font-size: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        label {
+            margin: 10px 0 5px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            max-width: 300px;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #E8BCB9;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #d6a69d;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .table th,
+        .table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .table th {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .table tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid box">
+        <!-- 横向导航栏 -->
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">FOOD SEARCH</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/calculate">CALORIE CALCULATOR</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/recipes">FOOD RECIPES</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="illness">FOOD THERAPY</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="random">RANDOM FOOD</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container mt-5">
+            <h1 class="text-center">Want to know the daily minimum calories you need to eat?</h1>
+            <p>Tell us more about you.</p>
+        </div>
+        <!-- <h1 class="text-center">Food Search</h1> -->
+
+        <form id="bmrForm">
+            <label for="user_name">Name:</label>
+            <input type="text" id="user_name" name="user_name" required>
+            <label for="user_age">Age:</label>
+            <input type="number" id="user_age" name="user_age" required>
+            <label for="user_gender">Gender:</label>
+            <select id="user_gender" name="user_gender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+            <label for="user_height">Height (cm):</label>
+            <input type="number" id="user_height" name="user_height" step="0.1" required>
+            <label for="user_weight">Weight (kg):</label>
+            <input type="number" id="user_weight" name="user_weight" step="0.1" required>
+            <button type="submit">Calculate BMR</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('bmrForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const user_name = document.getElementById('user_name').value;
+            const user_age = document.getElementById('user_age').value;
+            const user_gender = document.getElementById('user_gender').value;
+            const user_height = document.getElementById('user_height').value;
+            const user_weight = document.getElementById('user_weight').value;
+
+            fetch('/calculate_bmr', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `user_name=${user_name}&user_age=${user_age}&user_gender=${user_gender}&user_height=${user_height}&user_weight=${user_weight}`
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('result').innerText = data.error;
+                    } else {
+                        const message = data.message;
+                        const details = data.details;
+                        const resultHtml = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Parameter</th>
+                            <th scope="col">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Your daily minimum calories</td>
+                            <td>${details.bmr} Kcal</td>
+                        </tr>
+                        <tr>
+                            <td>Name</td>
+                            <td>${details.user_name}</td>
+                        </tr>
+                        <tr>
+                            <td>Age</td>
+                            <td>${details.age} years</td>
+                        </tr>
+                        <tr>
+                            <td>Gender</td>
+                            <td>${details.gender}</td>
+                        </tr>
+                        <tr>
+                            <td>Height</td>
+                            <td>${details.height} cm</td>
+                        </tr>
+                        <tr>
+                            <td>Weight</td>
+                            <td>${details.weight} kg</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+                        document.getElementById('result').innerHTML = resultHtml;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('result').innerText = 'An error occurred while calculating BMR.';
+                });
+        });
+    </script>
+</body>
+
+</html>
